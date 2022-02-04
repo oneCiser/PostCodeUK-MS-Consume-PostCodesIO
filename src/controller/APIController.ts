@@ -25,6 +25,7 @@ class APIController {
   public static async findPostCodeByPoint(req: Request, res: Response, next: NextFunction) {
     try {
       const {lat, lon} = req.params;
+      
       const result = await APIService.getPostCodeByPoint(parseFloat(lat), parseFloat(lon));
       if(result.status != 200)  {
         const error = result as IResponseError
@@ -34,8 +35,21 @@ class APIController {
       const PostCode = result as IResponseSuccess;
       const formattedPostCode = transformData(PostCode.result);
 
+      const nearestResult = await APIService.getNearestPostCode(formattedPostCode.postcode);
 
-      res.json(formattedPostCode);
+      if(nearestResult.status != 200)  {
+        const error = result as IResponseError
+        throw new Error(error.error);
+      }
+
+      const nearestPostCode = nearestResult as IResponseSuccess;
+      const nearestFormattedPostCode = transformData(nearestPostCode.result);
+
+
+      res.json({
+        postcode:formattedPostCode,
+        nearest:nearestFormattedPostCode
+      });
     } catch (error: any) {
       return next(new HttpException(error.status || 500, error.message));
     }

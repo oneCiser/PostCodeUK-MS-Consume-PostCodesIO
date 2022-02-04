@@ -1,11 +1,13 @@
 
 
 export const transformData = (data: any) => {
-    const {postcode, lat, lon, ...rest} = data;
+    const {postcode, latitude, longitude, ...rest} = data;
+    delete rest.distance;
+    delete rest.quality;
     return {
         postcode,
-        latitude: lat,
-        longitude: lon,
+        latitude: latitude,
+        longitude: longitude,
         data: rest
     }
 }

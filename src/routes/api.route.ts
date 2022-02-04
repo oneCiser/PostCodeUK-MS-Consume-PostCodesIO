@@ -20,7 +20,7 @@ class APIRouter {
 
   createRoutes(): void {
 
-    this.router.get('/point/:lat/:lon', 
+    this.router.get('/point/:lon/:lat', 
     (req: Request, res: Response, next: NextFunction) => APIControler.findPostCodeByPoint(req, res, next)
     );
   }

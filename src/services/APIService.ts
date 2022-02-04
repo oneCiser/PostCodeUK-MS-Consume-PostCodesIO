@@ -1,5 +1,6 @@
 import {IResponseSuccess, IResponseError, IResponse} from "../interfaces";
 import '../config/dotenv';
+import axios from 'axios';
 
 /**
  *
@@ -9,20 +10,26 @@ import '../config/dotenv';
  */
 class APIService {
 
+  /**
+   * @description get one postcode by point (lon, lat)
+   * @param {number} lat latitude
+   * @param {number} lon longitude 
+   * @returns {Promise<IResponseSuccess | IResponseError>} return de response of the consume postcode.io API
+   */
   async getPostCodeByPoint(lat: number, lon: number): Promise<IResponseSuccess | IResponseError> {
     return new Promise<IResponseSuccess | IResponseError>(async (resolve, reject) => {
-      fetch(`${process.env.POSTCODE_API}/postcodes?lon=${lon}&lat=${lat}`)
-      .then(response => response.json())
-      .then((data: IResponse) => {
+      axios.get(`${process.env.POSTCODE_API}postcodes?lon=${encodeURIComponent(lon)}&lat=${encodeURIComponent(lat)}&limit=1`)
+      .then((response) => {
+        const {data} = response;
         if (data.status === 200) {
           const result = data as IResponseSuccess;
           resolve({
             status: 200,
-            result: result.result
+            result: result.result[0]
           });
         } else {
           const result = data as IResponseError;
-          resolve({
+          reject({
             status: result.status,
             error: result.error
           });
@@ -36,14 +43,17 @@ class APIService {
   async getNearestPostCode(postcode: string): Promise<IResponseSuccess | IResponseError> {
     return new Promise<IResponseSuccess | IResponseError>(async (resolve, reject) => {
       const econdePostCode = encodeURIComponent(postcode);
-      fetch(`${process.env.POSTCODE_API}/postcodes/${econdePostCode}/nearest`)
-      .then(response => response.json())
-      .then((data: IResponse) => {
+      axios.get(`${process.env.POSTCODE_API}postcodes/${econdePostCode}/nearest`)
+      .then((response: any) => {
+        const data = response.data;
         if (data.status === 200) {
           const result = data as IResponseSuccess;
+          const firstNearest = result.result.filter((item: any) => {
+            return item.postcode !== postcode
+          })[0];
           resolve({
             status: 200,
-            result: result.result
+            result: firstNearest
           });
         } else {
           const result = data as IResponseError;
