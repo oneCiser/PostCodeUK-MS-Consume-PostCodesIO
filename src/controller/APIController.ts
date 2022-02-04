@@ -27,7 +27,7 @@ class APIController {
       const {lat, lon} = req.params;
       
       const result = await APIService.getPostCodeByPoint(parseFloat(lat), parseFloat(lon));
-      if(result.status != 200)  {
+      if(result.status != 200 )  {
         const error = result as IResponseError
         throw new Error(error.error);
       }

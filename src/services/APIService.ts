@@ -23,6 +23,12 @@ class APIService {
         const {data} = response;
         if (data.status === 200) {
           const result = data as IResponseSuccess;
+          if(!result.result) {
+            reject({
+              status: 404,
+              error: 'PostCode not found'
+            });
+          }
           resolve({
             status: 200,
             result: result.result[0]
@@ -57,13 +63,19 @@ class APIService {
           });
         } else {
           const result = data as IResponseError;
+          
           reject({
             status: result.status,
             error: result.error
           });
         }
       })
-      .catch(error => reject(error));
+      .catch(error => {
+        reject({
+          status: error.response.status,
+          error:'Post code not found'
+        })}
+        );
     });
     
   }
