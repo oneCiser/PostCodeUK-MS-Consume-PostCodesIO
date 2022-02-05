@@ -26,7 +26,7 @@ class APIService {
           if(!result.result) {
             reject({
               status: 404,
-              error: 'PostCode not found'
+              message: 'PostCode not found'
             });
           }
           resolve({
@@ -37,7 +37,7 @@ class APIService {
           const result = data as IResponseError;
           reject({
             status: result.status,
-            error: result.error
+            message: result.error
           });
         }
       })
@@ -66,14 +66,14 @@ class APIService {
           
           reject({
             status: result.status,
-            error: result.error
+            message: result.error
           });
         }
       })
       .catch(error => {
         reject({
           status: error.response.status,
-          error:'Post code not found'
+          message:'Post code not found'
         })}
         );
     });
