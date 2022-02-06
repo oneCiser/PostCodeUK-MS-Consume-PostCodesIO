@@ -35,15 +35,15 @@ class APIController {
       const PostCode = result as IResponseSuccess;
       const formattedPostCode = transformData(PostCode.result);
 
-      const nearestResult = await APIService.getNearestPostCode(formattedPostCode.postcode);
 
-      if(nearestResult.status != 200)  {
-        const error = result as IResponseError
-        throw new Error(error.error);
-      }
-
-      const nearestPostCode = nearestResult as IResponseSuccess;
-      const nearestFormattedPostCode = transformData(nearestPostCode.result);
+      let nearestPostCode
+      let nearestFormattedPostCode 
+      APIService.getNearestPostCode(formattedPostCode.postcode)
+      .then(nearestResult => {
+        nearestPostCode = nearestResult as IResponseSuccess;
+        nearestFormattedPostCode = transformData(nearestPostCode.result);
+      })
+      .catch(err => {nearestFormattedPostCode = undefined});
 
 
       res.json({
