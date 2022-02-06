@@ -3,7 +3,7 @@
 This is a microservice mounted on **ExpressJS** that receives a point (longitude and latitude) and returns the information of two zip codes: the first one is the closest zip code to the given point and the second one is the closest zip code to the first one if it exists.
 ## Project
 
-The project information can be found at the following link: [PostCodes UK]()
+The project information can be found at the following link: [PostCodes UK](https://github.com/oneCiser/PostCodeUK)
 
 ## Commands
 
